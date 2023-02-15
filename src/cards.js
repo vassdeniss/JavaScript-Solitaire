@@ -12,7 +12,11 @@ class Deck {
   }
 
   get top() {
-    return this.cards[this.size - 1];
+    return this.cards[this.topIndex];
+  }
+
+  get topIndex() {
+    return this.size - 1;
   }
 
   get size() {
@@ -63,5 +67,27 @@ class Stock extends Deck {
 
   place(cards) {
     throw new Error('Cannot place on stock!');
+  }
+}
+
+class Waste extends Deck {
+  canTake(index) {
+    return this.size > 0 && index === this.topIndex;
+  }
+
+  canPlace(cards) {
+    return false;
+  }
+
+  take(index) {
+    if (!this.canTake) {
+      throw new Error('Cannot take card!');
+    }
+
+    return this.cards.splice(index, this.size - index);
+  }
+
+  place(cards) {
+    throw new Error('Cannot place on waste!');
   }
 }
