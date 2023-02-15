@@ -1,0 +1,22 @@
+{
+  "name": "solitaire",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vassdeniss/JavaScript-Solitaire.git"
+  },
+  "author": "Denis Vasilev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vassdeniss/JavaScript-Solitaire/issues"
+  },
+  "homepage": "https://github.com/vassdeniss/JavaScript-Solitaire#readme",
+  "dependencies": {
+    "eslint": "^8.34.0"
+  }
+}
