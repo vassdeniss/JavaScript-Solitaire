@@ -39,6 +39,7 @@ body {
 .card {
   width: 70px;
   height: 20px;
+  display: block;
   border: 1px solid black;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -47,12 +48,21 @@ body {
   margin: auto;
   background-color: white;
   border-bottom: none;
+  position: relative;
 }
 
 .back {
-  background-image: url("./card-back.png");
-  background-size: cover;
-  background-repeat: no-repeat;
+  height: 90%;
+  background-image: url('./assets/card-back.png');
+  background-size: 8px;
+  background-repeat: repeat;
+  border: 1px solid black;
+  display: block;
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 5px;
+  bottom: 5px;
 }
 
 .card.top {
