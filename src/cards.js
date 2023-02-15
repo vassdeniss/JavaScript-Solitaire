@@ -21,6 +21,13 @@ const suits = {
   Spades: 'spades',
 };
 
+const colors = {
+  clubs: 'black',
+  diamonds: 'red',
+  hearts: 'red',
+  spades: 'black',
+};
+
 class Card {
   constructor(suit, face, faceUp = false) {
     this.suit = suit;
@@ -128,5 +135,26 @@ class Foundation extends Deck {
     const isFollowUpCard = this.size > 0 && cards.face - 1 === this.top.face;
 
     return isSameSuit && (isFirstCard || isFollowUpCard);
+  }
+}
+
+class Pile extends Deck {
+  canTake(index) {
+    return this.size > 0 && this.cards[index].faceUp;
+  }
+
+  canPlace(cards) {
+    if (!Array.isArray(cards)) {
+      cards = [cards];
+    }
+
+    const bottomCard = cards[0];
+
+    const isPileEmpty = bottomCard.face === faces.King && this.size === 0;
+    const hasCards = this.size > 0;
+    const isLowerFace = bottomCard.face + 1 === this.top.face;
+    const isOppositeSuit = colors[bottomCard.suit] !== colors[this.top.suit];
+
+    return isPileEmpty || (hasCards && isLowerFace && isOppositeSuit);
   }
 }
