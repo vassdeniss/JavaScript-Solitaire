@@ -47,3 +47,21 @@ class Deck {
     throw new TypeError('Cannot invoke abstract method!');
   }
 }
+
+class Stock extends Deck {
+  canTake(index) {
+    return false;
+  }
+
+  canPlace(cards) {
+    return false;
+  }
+
+  take(index) {
+    throw new Error('Cannot take from stock!');
+  }
+
+  place(cards) {
+    throw new Error('Cannot place on stock!');
+  }
+}
