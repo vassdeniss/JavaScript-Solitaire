@@ -1,3 +1,26 @@
+const faces = {
+  Ace: 1,
+  Two: 2,
+  Three: 3,
+  Four: 4,
+  Five: 5,
+  Six: 6,
+  Seven: 7,
+  Eight: 8,
+  Nine: 9,
+  Ten: 10,
+  Jack: 11,
+  Queen: 12,
+  King: 13,
+};
+
+const suits = {
+  Clubs: 'clubs',
+  Diamonds: 'diamonds',
+  Hearts: 'hearts',
+  Spades: 'spades',
+};
+
 class Card {
   constructor(suit, face, faceUp = false) {
     this.suit = suit;
@@ -43,12 +66,24 @@ class Deck {
     this.top.faceUp = true;
   }
 
-  take() {
-    throw new TypeError('Cannot invoke abstract method!');
+  take(index) {
+    if (!this.canTake(index)) {
+      throw new Error('Cannot take card!');
+    }
+
+    return this.cards.splice(index, this.size - index);
   }
 
-  place() {
-    throw new TypeError('Cannot invoke abstract method!');
+  place(cards) {
+    if (!this.canPlace(cards)) {
+      throw new Error('Cannot take card!');
+    }
+
+    if (!Array.isArray(cards)) {
+      cards = [cards];
+    }
+
+    this.cards.push(...cards);
   }
 }
 
@@ -60,14 +95,6 @@ class Stock extends Deck {
   canPlace(cards) {
     return false;
   }
-
-  take(index) {
-    throw new Error('Cannot take from stock!');
-  }
-
-  place(cards) {
-    throw new Error('Cannot place on stock!');
-  }
 }
 
 class Waste extends Deck {
@@ -78,16 +105,28 @@ class Waste extends Deck {
   canPlace(cards) {
     return false;
   }
+}
 
-  take(index) {
-    if (!this.canTake) {
-      throw new Error('Cannot take card!');
-    }
+class Foundation extends Deck {
+  constructor(cards, suit) {
+    super(cards);
 
-    return this.cards.splice(index, this.size - index);
+    this.suit = suit;
   }
 
-  place(cards) {
-    throw new Error('Cannot place on waste!');
+  canTake(index) {
+    return this.size > 0 && index === this.topIndex;
+  }
+
+  canPlace(cards) {
+    if (Array.isArray(cards)) {
+      return false;
+    }
+
+    const isSameSuit = cards.suit === this.suit;
+    const isFirstCard = cards.face === faces.Ace && this.size === 0;
+    const isFollowUpCard = this.size > 0 && cards.face - 1 === this.top.face;
+
+    return isSameSuit && (isFirstCard || isFollowUpCard);
   }
 }
