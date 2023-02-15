@@ -11,8 +11,16 @@ class Deck {
     this.cards = cards;
   }
 
+  get top() {
+    return this.cards[this.size - 1];
+  }
+
+  get size() {
+    return this.cards.length;
+  }
+
   canFlip() {
-    throw new TypeError('Cannot invoke abstract method');
+    return this.size > 0 && !this.top.faceUp;
   }
 
   canTake(index) {
@@ -24,7 +32,11 @@ class Deck {
   }
 
   flip() {
-    throw new TypeError('Cannot invoke abstract method!');
+    if (!this.canFlip()) {
+      throw new Error('Cannot flip card!');
+    }
+
+    this.top.faceUp = true;
   }
 
   take() {
