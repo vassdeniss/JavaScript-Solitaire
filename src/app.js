@@ -9,12 +9,16 @@ const zones = {
 
 let state = null;
 let index = [];
+let currentMove = null;
 
+document.getElementById('new-game').addEventListener('click', start);
 document.getElementById('board').addEventListener('click', onBoardClick);
 
 start();
 
 function start() {
+  currentMove = null;
+
   const deck = createDeck();
   for (let i = 0; i < 10; i++) {
     shuffleDeck(deck);
@@ -24,12 +28,10 @@ function start() {
 
   index.forEach((deck) => (deck.moves = getMoves(deck)));
 
-  console.log(index, state);
-
   stateToBoard(state);
 }
 
-function getMoves(deck, cards) {
+function getMoves(deck, cards, index) {
   return {
     flip: !cards && deck.canFlip(),
     take:
@@ -54,16 +56,20 @@ function stateToBoard(state) {
 
   zones.piles.replaceChildren(...state.piles.map(createDeckElement));
 
-  console.log(state.stock.size);
+  if (Object.values(state.foundations).every((f) => f.size === 13)) {
+    setTimeout(() => alert('You Win!'), 0);
+  }
 }
 
 function onBoardClick(event) {
   let deck = null;
+  let card = null;
 
   if (event.target.classList.contains('deck')) {
     deck = event.target;
   } else if (event.target.classList.contains('card')) {
-    deck = event.target.parentElement;
+    card = event.target;
+    deck = card.parentElement;
   } else if (event.target.classList.contains('back')) {
     deck = event.target.parentElement.parentElement;
   }
@@ -73,22 +79,73 @@ function onBoardClick(event) {
   }
 
   const type = deck.dataset.type;
-  let suit = '';
-  let index = -1;
 
-  if (type === 'foundation') {
+  let suit = '';
+  if (type === 'foundations') {
     suit = deck.dataset.suit;
   }
 
-  if (type === 'pile') {
-    index = Number(deck.dataset.index);
+  let pileIndex = -1;
+  if (type === 'piles') {
+    pileIndex = Number(deck.dataset.index);
   }
 
-  if (type === 'stock') {
-    flipStock();
+  let cardIndex = -1;
+  if (card !== null) {
+    cardIndex = Number(card.dataset.index);
   }
 
+  const action = deck.dataset.action;
+  let cards = undefined;
+  switch (action) {
+    case 'flip':
+      if (type === 'stock') {
+        flipStock();
+      } else if (type === 'piles') {
+        flipPile(pileIndex);
+      }
+      currentMove = null;
+      break;
+    case 'take':
+      const deck = findDeck(type, pileIndex, suit);
+
+      cards = deck.cards.slice(cardIndex);
+
+      currentMove = {
+        source: deck,
+        type,
+        pileIndex,
+        cardIndex,
+      };
+
+      document.body.style.cursor = 'grabbing';
+
+      break;
+    case 'place':
+      const target = findDeck(type, pileIndex, suit);
+      const selectedCards = currentMove.source.take(currentMove.cardIndex);
+      target.place(selectedCards);
+
+      currentMove = null;
+      break;
+  }
+
+  index.forEach((deck) => (deck.moves = getMoves(deck, cards)));
   stateToBoard(state);
+}
+
+function findDeck(type, index, suit) {
+  let deck = null;
+
+  if (type == 'piles') {
+    deck = state[type][index];
+  } else if (type == 'foundations') {
+    deck = state[type][suit];
+  } else {
+    deck = state[type];
+  }
+
+  return deck;
 }
 
 function flipStock() {
@@ -96,12 +153,17 @@ function flipStock() {
     const cards = [...state.waste.cards];
     state.waste.cards.length = 0;
     cards.reverse();
+    cards.forEach((card) => (card.faceUp = false));
     state.stock.cards.push(...cards);
   } else {
-    for (let i = 0; i < 3; i++) {
-      state.stock.flip();
-      const card = state.stock.cards.pop();
-      state.waste.cards.push(card);
-    }
+    //for (let i = 0; i < 3; i++) {
+    state.stock.flip();
+    const card = state.stock.cards.pop();
+    state.waste.cards.push(card);
+    //}
   }
+}
+
+function flipPile(index) {
+  state.piles[index].flip();
 }

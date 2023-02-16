@@ -95,6 +95,10 @@ export class Deck {
 }
 
 export class Stock extends Deck {
+  canFlip() {
+    return true;
+  }
+
   canTake(index) {
     return false;
   }
@@ -126,13 +130,15 @@ export class Foundation extends Deck {
   }
 
   canPlace(cards) {
-    if (!cards || Array.isArray(cards)) {
+    if (!cards || (Array.isArray(cards) && cards.length > 1)) {
       return false;
     }
 
-    const isSameSuit = cards.suit === this.suit;
-    const isFirstCard = cards.face === faces.Ace && this.size === 0;
-    const isFollowUpCard = this.size > 0 && cards.face - 1 === this.top.face;
+    const card = Array.isArray(cards) ? cards[0] : cards;
+
+    const isSameSuit = card.suit === this.suit;
+    const isFirstCard = card.face === faces.Ace && this.size === 0;
+    const isFollowUpCard = this.size > 0 && card.face - 1 === this.top.face;
 
     return isSameSuit && (isFirstCard || isFollowUpCard);
   }

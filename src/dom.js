@@ -1,4 +1,4 @@
-import { colors, Stock, Waste, Foundation, Pile } from './cards.js';
+import { colors, Foundation, Pile } from './cards.js';
 
 const suits = {
   clubs: '&clubs;',
@@ -29,9 +29,22 @@ export function createDeckElement(deck, index) {
 
   let activeCard = false;
   if (deck.moves.flip || deck.moves.place || deck.moves.take.length > 0) {
+    if (!deck.moves.place) {
+      document.body.style.cursor = 'default';
+    }
+
     if (deck.size === 0 || deck.moves.place) {
       element.classList.add('active');
-    } else {
+    }
+
+    if (deck.moves.place) {
+      element.dataset.action = 'place';
+      activeCard = true;
+    } else if (deck.moves.flip) {
+      element.dataset.action = 'flip';
+      activeCard = true;
+    } else if (deck.moves.take.length > 0) {
+      element.dataset.action = 'take';
       activeCard = true;
     }
   }
@@ -39,22 +52,16 @@ export function createDeckElement(deck, index) {
   element.dataset.type = deck.constructor.name.toLowerCase();
 
   if (deck instanceof Foundation) {
+    element.dataset.type = 'foundations';
     element.dataset.suit = deck.suit;
   }
 
   if (deck instanceof Pile) {
+    element.dataset.type = 'piles';
     element.dataset.index = index;
   }
 
   let cards = deck.cards;
-
-  if (deck.size > 3 && (deck instanceof Stock || deck instanceof Waste)) {
-    const visibleCount = Math.ceil((deck.size - 1) / 5);
-
-    cards = new Array(visibleCount).fill({ faceUp: false });
-
-    cards.push(deck.top);
-  }
 
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i];
@@ -64,16 +71,6 @@ export function createDeckElement(deck, index) {
     const isPileCard = deck.canTake(i);
 
     const isActive = activeCard && (isStockCard || isPileCard);
-
-    // if (isActive) {
-    //   if (deck instanceof Waste) {
-    //     const tooltipText = document.createElement('span');
-    //     tooltipText.classList.add('tooltip-text');
-    //     tooltipText.innerHTML = `${card}\n${cards[i - 1]}\n${cards[i - 2]}`;
-    //     element.classList.add('tooltip');
-    //     element.appendChild(tooltipText);
-    //   }
-    // }
 
     element.appendChild(createCard(card, isTop, i, isActive));
   }
