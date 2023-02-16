@@ -1,10 +1,10 @@
-import { color } from './cards.js';
+import { colors, Stock, Waste } from './cards.js';
 
 const suits = {
-  clubs: '&clubs',
-  diamonds: '&diams',
-  hearts: '&hearts',
-  spades: '&spades',
+  clubs: '&clubs;',
+  diamonds: '&diams;',
+  hearts: '&hearts;',
+  spades: '&spades;',
 };
 
 const faces = {
@@ -27,12 +27,24 @@ export function creeateDeckElement(deck) {
   const element = document.createElement('article');
   element.classList.add('deck');
 
-  for (let i = 0; i < deck.size; i++) {
-    const card = deck.cards[i];
-    const isTop = i === deck.topIndex;
+  let cards = deck.cards;
+
+  if (deck.size > 1 && (deck instanceof Stock || deck instanceof Waste)) {
+    const visibleCount = Math.ceil((deck.size - 1) / 5);
+
+    cards = new Array(visibleCount).fill({ faceUp: false });
+
+    cards.push(deck.top);
+  }
+
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    const isTop = i === cards.length - 1;
 
     element.appendChild(createCard(card, isTop));
   }
+
+  return element;
 }
 
 function createCard(card, isTop) {
@@ -42,7 +54,7 @@ function createCard(card, isTop) {
   let content = '';
 
   if (card.faceUp) {
-    element.classList.add(color[card.suit]);
+    element.classList.add(colors[card.suit]);
     content = `${suits[card.suit]}${faces[card.face]}`;
   } else {
     content = '<span class="back"></span>';
@@ -52,7 +64,7 @@ function createCard(card, isTop) {
     element.classList.add('top');
   }
 
-  element.textContent = content;
+  element.innerHTML = content;
 
   return element;
 }
