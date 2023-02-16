@@ -161,6 +161,10 @@ export class Pile extends Deck {
     const bottomCard = cards[0];
 
     const isPileEmpty = bottomCard.face === faces.King && this.size === 0;
+    if (isPileEmpty) {
+      return true;
+    }
+
     const hasCards = this.size > 0;
     const isLowerFace = bottomCard.face + 1 === this.top.face;
     const isOppositeSuit = colors[bottomCard.suit] !== colors[this.top.suit];
