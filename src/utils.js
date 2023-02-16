@@ -33,29 +33,43 @@ export function shuffleDeck(deck) {
 }
 
 export function dealDeck(deck) {
+  const index = [
+    new Stock(),
+    new Waste(),
+    new Foundation([], suits.Clubs),
+    new Foundation([], suits.Diamonds),
+    new Foundation([], suits.Hearts),
+    new Foundation([], suits.Spades),
+    new Pile(),
+    new Pile(),
+    new Pile(),
+    new Pile(),
+    new Pile(),
+    new Pile(),
+    new Pile(),
+  ];
+
   const state = {
-    stock: new Stock(),
-    waste: new Waste(),
+    stock: index[0],
+    waste: index[1],
     foundations: {
-      [suits.Clubs]: new Foundation([], suits.Clubs),
-      [suits.Diamonds]: new Foundation([], suits.Diamonds),
-      [suits.Hearts]: new Foundation([], suits.Hearts),
-      [suits.Spades]: new Foundation([], suits.Spades),
+      [suits.Clubs]: index[2],
+      [suits.Diamonds]: index[3],
+      [suits.Hearts]: index[4],
+      [suits.Spades]: index[5],
     },
     piles: [
-      new Pile(),
-      new Pile(),
-      new Pile(),
-      new Pile(),
-      new Pile(),
-      new Pile(),
-      new Pile(),
+      index[6],
+      index[7],
+      index[8],
+      index[9],
+      index[10],
+      index[11],
+      index[12],
     ],
   };
 
   for (let i = 0; i < 7; i++) {
-    debugger;
-
     const pile = state.piles[i];
 
     for (let j = 0; j <= i; j++) {
@@ -67,5 +81,8 @@ export function dealDeck(deck) {
 
   state.stock.cards.push(...deck.cards);
 
-  return state;
+  return {
+    index,
+    state,
+  };
 }

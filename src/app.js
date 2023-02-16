@@ -8,7 +8,7 @@ function start() {
     shuffleDeck(deck);
   }
 
-  const state = dealDeck(deck);
+  const { index, state } = dealDeck(deck);
 
-  console.log(state);
+  console.log(index, state);
 }
