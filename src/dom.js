@@ -1,4 +1,4 @@
-import { colors, Stock, Waste } from './cards.js';
+import { colors, Stock, Waste, Foundation, Pile } from './cards.js';
 
 const suits = {
   clubs: '&clubs;',
@@ -23,9 +23,21 @@ const faces = {
   13: 'K',
 };
 
-export function creeateDeckElement(deck) {
+export function createDeckElement(deck, index) {
   const element = document.createElement('article');
   element.classList.add('deck');
+
+  element.dataset.type = deck.constructor.name.toLowerCase();
+
+  console.log(deck);
+
+  if (deck instanceof Foundation) {
+    element.dataset.suit = deck.suit;
+  }
+
+  if (deck instanceof Pile) {
+    element.dataset.index = index;
+  }
 
   let cards = deck.cards;
 
@@ -41,15 +53,16 @@ export function creeateDeckElement(deck) {
     const card = cards[i];
     const isTop = i === cards.length - 1;
 
-    element.appendChild(createCard(card, isTop));
+    element.appendChild(createCard(card, isTop, i));
   }
 
   return element;
 }
 
-function createCard(card, isTop) {
+function createCard(card, isTop, index) {
   const element = document.createElement('div');
   element.classList.add('card');
+  element.dataset.index = index;
 
   let content = '';
 

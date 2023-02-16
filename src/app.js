@@ -1,11 +1,13 @@
 import { createDeck, shuffleDeck, dealDeck } from './utils.js';
-import { creeateDeckElement } from './dom.js';
+import { createDeckElement } from './dom.js';
 
 const zones = {
   stock: document.getElementById('stock'),
   foundations: document.getElementById('foundation'),
   piles: document.getElementById('pile'),
 };
+
+document.getElementById('board').addEventListener('click', onBoardClick);
 
 start();
 
@@ -24,9 +26,43 @@ function start() {
 
 function stateToBoard(state) {
   zones.stock.replaceChildren(
-    creeateDeckElement(state.stock),
-    creeateDeckElement(state.waste)
+    createDeckElement(state.stock),
+    createDeckElement(state.waste)
   );
 
-  zones.piles.replaceChildren(...state.piles.map(creeateDeckElement));
+  zones.foundations.replaceChildren(
+    ...Object.values(state.foundations).map(createDeckElement)
+  );
+
+  zones.piles.replaceChildren(...state.piles.map(createDeckElement));
+}
+
+function onBoardClick(event) {
+  let deck = null;
+
+  if (event.target.classList.contains('deck')) {
+    deck = event.target;
+  } else if (event.target.classList.contains('card')) {
+    deck = event.target.parentElement;
+  } else if (event.target.classList.contains('back')) {
+    deck = event.target.parentElement.parentElement;
+  }
+
+  if (deck === null) {
+    return;
+  }
+
+  const type = deck.dataset.type;
+  let suit = '';
+  let index = -1;
+
+  if (type === 'foundation') {
+    suit = deck.dataset.suit;
+  }
+
+  if (type === 'pile') {
+    index = Number(deck.dataset.index);
+  }
+
+  console.log('clicked', type, suit, index);
 }
