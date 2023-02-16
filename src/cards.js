@@ -126,7 +126,7 @@ export class Foundation extends Deck {
   }
 
   canPlace(cards) {
-    if (Array.isArray(cards)) {
+    if (!cards || Array.isArray(cards)) {
       return false;
     }
 
@@ -144,6 +144,10 @@ export class Pile extends Deck {
   }
 
   canPlace(cards) {
+    if (!cards) {
+      return false;
+    }
+
     if (!Array.isArray(cards)) {
       cards = [cards];
     }

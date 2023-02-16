@@ -29,8 +29,6 @@ export function createDeckElement(deck, index) {
 
   element.dataset.type = deck.constructor.name.toLowerCase();
 
-  console.log(deck);
-
   if (deck instanceof Foundation) {
     element.dataset.suit = deck.suit;
   }
