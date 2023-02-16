@@ -23,7 +23,19 @@ const faces = {
   13: 'K',
 };
 
-function createCard(card, top) {
+export function creeateDeckElement(deck) {
+  const element = document.createElement('article');
+  element.classList.add('deck');
+
+  for (let i = 0; i < deck.size; i++) {
+    const card = deck.cards[i];
+    const isTop = i === deck.topIndex;
+
+    element.appendChild(createCard(card, isTop));
+  }
+}
+
+function createCard(card, isTop) {
   const element = document.createElement('div');
   element.classList.add('card');
 
@@ -36,7 +48,7 @@ function createCard(card, top) {
     content = '<span class="back"></span>';
   }
 
-  if (top) {
+  if (isTop) {
     element.classList.add('top');
   }
 
