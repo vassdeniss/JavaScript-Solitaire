@@ -106,3 +106,9 @@ body {
 #stock .card:not(.top) {
   height: 1.5px;
 }
+
+.active:hover
+/* .active:hover .back*/ {
+  background-color: #767676;
+  cursor: pointer;
+}

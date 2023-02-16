@@ -27,6 +27,15 @@ export function createDeckElement(deck, index) {
   const element = document.createElement('article');
   element.classList.add('deck');
 
+  let activeCard = false;
+  if (deck.moves.flip || deck.moves.place || deck.moves.take.length > 0) {
+    if (deck.size === 0 || deck.moves.place) {
+      element.classList.add('active');
+    } else {
+      activeCard = true;
+    }
+  }
+
   element.dataset.type = deck.constructor.name.toLowerCase();
 
   if (deck instanceof Foundation) {
@@ -51,16 +60,25 @@ export function createDeckElement(deck, index) {
     const card = cards[i];
     const isTop = i === cards.length - 1;
 
-    element.appendChild(createCard(card, isTop, i));
+    const isStockCard = isTop && deck.canFlip();
+    const isPileCard = deck.canTake(i);
+
+    const isActive = activeCard && (isStockCard || isPileCard);
+
+    element.appendChild(createCard(card, isTop, i, isActive));
   }
 
   return element;
 }
 
-function createCard(card, isTop, index) {
+function createCard(card, isTop, index, isActive) {
   const element = document.createElement('div');
   element.classList.add('card');
   element.dataset.index = index;
+
+  if (isActive) {
+    element.classList.add('active');
+  }
 
   let content = '';
 
