@@ -48,7 +48,7 @@ export function createDeckElement(deck, index) {
 
   let cards = deck.cards;
 
-  if (deck.size > 1 && (deck instanceof Stock || deck instanceof Waste)) {
+  if (deck.size > 3 && (deck instanceof Stock || deck instanceof Waste)) {
     const visibleCount = Math.ceil((deck.size - 1) / 5);
 
     cards = new Array(visibleCount).fill({ faceUp: false });
@@ -64,6 +64,16 @@ export function createDeckElement(deck, index) {
     const isPileCard = deck.canTake(i);
 
     const isActive = activeCard && (isStockCard || isPileCard);
+
+    // if (isActive) {
+    //   if (deck instanceof Waste) {
+    //     const tooltipText = document.createElement('span');
+    //     tooltipText.classList.add('tooltip-text');
+    //     tooltipText.innerHTML = `${card}\n${cards[i - 1]}\n${cards[i - 2]}`;
+    //     element.classList.add('tooltip');
+    //     element.appendChild(tooltipText);
+    //   }
+    // }
 
     element.appendChild(createCard(card, isTop, i, isActive));
   }

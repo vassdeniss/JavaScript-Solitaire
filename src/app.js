@@ -7,6 +7,9 @@ const zones = {
   piles: document.getElementById('pile'),
 };
 
+let state = null;
+let index = [];
+
 document.getElementById('board').addEventListener('click', onBoardClick);
 
 start();
@@ -17,7 +20,7 @@ function start() {
     shuffleDeck(deck);
   }
 
-  const { index, state } = dealDeck(deck);
+  [index, state] = dealDeck(deck);
 
   index.forEach((deck) => (deck.moves = getMoves(deck)));
 
@@ -50,6 +53,8 @@ function stateToBoard(state) {
   );
 
   zones.piles.replaceChildren(...state.piles.map(createDeckElement));
+
+  console.log(state.stock.size);
 }
 
 function onBoardClick(event) {
@@ -79,5 +84,24 @@ function onBoardClick(event) {
     index = Number(deck.dataset.index);
   }
 
-  console.log('clicked', type, suit, index);
+  if (type === 'stock') {
+    flipStock();
+  }
+
+  stateToBoard(state);
+}
+
+function flipStock() {
+  if (state.stock.size === 0) {
+    const cards = [...state.waste.cards];
+    state.waste.cards.length = 0;
+    cards.reverse();
+    state.stock.cards.push(...cards);
+  } else {
+    for (let i = 0; i < 3; i++) {
+      state.stock.flip();
+      const card = state.stock.cards.pop();
+      state.waste.cards.push(card);
+    }
+  }
 }

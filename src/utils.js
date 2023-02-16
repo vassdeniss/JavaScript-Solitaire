@@ -81,8 +81,5 @@ export function dealDeck(deck) {
 
   state.stock.cards.push(...deck.cards);
 
-  return {
-    index,
-    state,
-  };
+  return [index, state];
 }
