@@ -109,3 +109,8 @@ body {
   background-color: #767676;
   cursor: pointer;
 }
+
+#foundation .card:not(.top) {
+  font-size: 0;
+  height: 1px;
+}
